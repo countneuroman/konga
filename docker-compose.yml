@@ -5,7 +5,6 @@ networks:
   driver: bridge
 
 services:
-
   #######################################
   # Postgres: The database used by Kong
   #######################################
@@ -30,7 +29,7 @@ services:
   # Kong database migration
   #######################################
   kong-migration:
-    image: kong:1.5
+    image: kong:2.7.1
     command: "kong migrations bootstrap"
     networks:
       - kong-net
@@ -47,7 +46,7 @@ services:
   # Kong: The API Gateway
   #######################################
   kong:
-    image: kong:1.5
+    image: kong:2.7.1
     restart: always
     networks:
       - kong-net
@@ -67,3 +66,15 @@ services:
     ports:
       - 8001:8001
       - 8000:8000
+
+  konga:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    networks:
+      - kong-net
+    depends_on:
+      - kong-database
+    ports:
+      - "1337:1337"
